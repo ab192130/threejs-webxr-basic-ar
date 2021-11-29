@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {ARButton} from 'three/examples/jsm/webxr/ARButton';
+import _ from 'lodash';
 
 let scene;
 let camera;
@@ -17,11 +18,12 @@ function init() {
     scene = new THREE.Scene();
 
     // Camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 20);
 
     // Render
     renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    //renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true; // Shadows
     container.appendChild(renderer.domElement);
 
@@ -30,7 +32,7 @@ function init() {
     light.position.set(0.5, 1, 0.25);
     scene.add(light);
 
-    // Handling resizing
+    // Handle resizing
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -42,10 +44,12 @@ function init() {
     renderer.xr.enabled = true; // VR/AR
     document.body.appendChild(ARButton.createButton(renderer));
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1).rotateX(45)
     controller = renderer.xr.getController(0);
     controller.addEventListener('select', () => {
-        console.log("hey");
+        let geometry = new THREE.BoxGeometry(1, 1, 1);
+        geometry.rotateX(_.random(0, 90));
+        geometry.rotateY(_.random(0, 90));
+        geometry.rotateZ(_.random(0, 90));
         const mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: 0xffffff}));
         mesh.position.set(0, 0, -10).applyMatrix4(controller.matrixWorld);
         mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
@@ -56,6 +60,9 @@ function init() {
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    renderer.setAnimationLoop(render);
+}
+
+function render() {
     renderer.render(scene, camera);
 }

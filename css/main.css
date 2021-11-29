@@ -2,4 +2,18 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
+    background-color: #000000;
+}
+
+.info {
+    position: absolute;
+    color: #ffffff;
+    z-index: 999;
+    width: 100%;
+    text-align: center;
+}
+
+.info-wrapper {
+    padding: 3rem;
+    font-size: 2em;
 }
